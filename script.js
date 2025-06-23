@@ -31,7 +31,7 @@ function handleHistoryUpload() {
         const json = XLSX.utils.sheet_to_json(sheet, { header: 1 }).slice(1);
         if (!historyData[sheetName]) historyData[sheetName] = [];
         json.forEach((row) => {
-          const group = row.slice(2).filter(Boolean);
+          const group = row.slice(1).filter(Boolean);
           if (group.length > 0) {
             historyData[sheetName].push(group);
           }
@@ -141,9 +141,9 @@ function downloadHistory() {
   const data = [];
   const history = historyData[moduleName];
   history.forEach((group, idx) => {
-    data.push(["1", idx + 1, ...group]);
+    data.push([idx + 1, ...group]);
   });
-  const ws = XLSX.utils.aoa_to_sheet([["회차", "조번호", "학생1", "학생2", "..."]].concat(data));
+  const ws = XLSX.utils.aoa_to_sheet([["조번호", "학생1", "학생2", "..."]].concat(data));
   XLSX.utils.book_append_sheet(uploadedHistoryWorkbook, ws, moduleName);
 
   XLSX.writeFile(uploadedHistoryWorkbook, `history_${moduleName}.xlsx`);
