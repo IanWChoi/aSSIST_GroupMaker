@@ -68,6 +68,10 @@ function runGrouping() {
   document.getElementById("step4").style.display = "none";
   document.getElementById("result").style.display = "block";
 
+
+  document.getElementById("moduleDisplay").textContent = moduleName;
+
+
   const homeButton = document.createElement("button");
   homeButton.innerText = "홈으로";
   homeButton.onclick = () => {
@@ -75,6 +79,7 @@ function runGrouping() {
   };
   document.getElementById("groupOutput").appendChild(homeButton);
 }
+
 
 function generateGroups(students, numGroups, history) {
   const pairCounts = {};

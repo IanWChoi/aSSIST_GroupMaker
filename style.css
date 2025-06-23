@@ -89,6 +89,14 @@ button:hover {
   margin: 15px 0;
 }
 
+/* 모듈명 표시 스타일 */
+#moduleDisplay {
+  font-weight: bold;
+  color: #2c3e50;
+  margin-bottom: 10px;
+  font-size: 1.1em;
+}
+
 @media (max-width: 600px) {
   body {
     padding: 20px 10px 100px;
