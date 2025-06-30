@@ -3,18 +3,25 @@ let studentNames = [];
 let historyData = {}; // { moduleName: [ [group1], [group2], ... ] }
 let uploadedHistoryWorkbook = null;
 let lastScore = 0;
+let exclusionPairs = [];
 
-function nextStep(step) {
-  document.getElementById(`step${step}`).style.display = "none";
-  document.getElementById(`step${step + 1}`).style.display = "block";
+function nextStep(current, next = current + 1) {
+  document.getElementById(`step${current}`).style.display = "none";
+  document.getElementById(`step${next}`).style.display = "block";
 
-  if (step === 1) {
+  if (current === 1) {
     moduleName = document.getElementById("module").value.trim();
   }
 
-  if (step === 2) {
+  if (current === 2) {
     const raw = document.getElementById("names").value.trim();
     studentNames = raw.split("/").map((name) => name.trim()).filter(Boolean);
+
+    const excludeRaw = document.getElementById("exclude").value.trim();
+    exclusionPairs = excludeRaw
+      .split("/")
+      .map(pair => pair.split("-").map(name => name.trim()).sort().join("::"))
+      .filter(Boolean);
   }
 }
 
@@ -45,7 +52,7 @@ function handleHistoryUpload() {
 
 function skipHistory() {
   uploadedHistoryWorkbook = XLSX.utils.book_new();
-  historyData = {}; // 초기화
+  historyData = {};
   nextStep(3);
 }
 
@@ -68,10 +75,6 @@ function runGrouping() {
   document.getElementById("step4").style.display = "none";
   document.getElementById("result").style.display = "block";
 
-
-  document.getElementById("moduleDisplay").textContent = moduleName;
-
-
   const homeButton = document.createElement("button");
   homeButton.innerText = "홈으로";
   homeButton.onclick = () => {
@@ -79,7 +82,6 @@ function runGrouping() {
   };
   document.getElementById("groupOutput").appendChild(homeButton);
 }
-
 
 function generateGroups(students, numGroups, history) {
   const pairCounts = {};
@@ -101,6 +103,22 @@ function generateGroups(students, numGroups, history) {
     for (let i = 0; i < shuffled.length; i++) {
       groups[i % numGroups].push(shuffled[i]);
     }
+
+    let invalid = false;
+    for (const group of groups) {
+      for (let i = 0; i < group.length; i++) {
+        for (let j = i + 1; j < group.length; j++) {
+          const key = [group[i], group[j]].sort().join("::");
+          if (exclusionPairs.includes(key)) {
+            invalid = true;
+            break;
+          }
+        }
+        if (invalid) break;
+      }
+      if (invalid) break;
+    }
+    if (invalid) continue;
 
     let score = 0;
     for (const group of groups) {
@@ -125,9 +143,15 @@ function displayGroups(groups) {
   const container = document.getElementById("groupOutput");
   container.innerHTML = "";
 
-  const scoreDiv = document.createElement("div");
-  scoreDiv.innerHTML = `<p><strong>🔁 중복 점수:</strong> ${lastScore}</p>`;
-  container.appendChild(scoreDiv);
+  const moduleTitle = document.createElement("div");
+  moduleTitle.id = "moduleDisplay";
+  moduleTitle.innerText = moduleName;
+  container.appendChild(moduleTitle);
+
+  const scoreBox = document.createElement("div");
+  scoreBox.id = "scoreBox";
+  scoreBox.innerText = `중복 점수: ${lastScore}`;
+  document.getElementById("result").insertBefore(scoreBox, container);
 
   groups.forEach((group, i) => {
     const div = document.createElement("div");
@@ -139,7 +163,6 @@ function displayGroups(groups) {
 function downloadHistory() {
   if (!uploadedHistoryWorkbook) uploadedHistoryWorkbook = XLSX.utils.book_new();
 
-  // 현재 모듈 시트 제거 (있다면)
   const idx = uploadedHistoryWorkbook.SheetNames.indexOf(moduleName);
   if (idx !== -1) uploadedHistoryWorkbook.SheetNames.splice(idx, 1);
 

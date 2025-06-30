@@ -6,32 +6,35 @@
   <title>aSSIST GroupMaker</title>
   <link rel="stylesheet" href="style.css" />
   <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
-  
 </head>
 <body>
   <div class="container">
-    <h1>aSSIST GroupMaker</h1>
+    <h1 class="title-center">aSSIST GroupMaker</h1>
 
-    <div id="step1">
+    <div class="step" id="step1">
       <label for="module">1. 모듈 이름을 입력하세요</label><br />
       <input type="text" id="module" placeholder="예: Business Strategy" />
       <button onclick="nextStep(1)">다음</button>
     </div>
 
-    <div id="step2" style="display: none">
+    <div class="step" id="step2" style="display: none">
       <label for="names">2. 학생 이름을 입력하세요 (예: 박선영/임유나/최우석)</label><br />
       <input type="text" id="names" placeholder="이름1/이름2/..." />
+
+      <label for="exclude" style="margin-top: 10px; display: block;">(선택) 같은 조가 되지 않아야 하는 학생 쌍을 입력하세요<br />(예: 임유나-최우석/박선영-노홍연)</label>
+      <input type="text" id="exclude" placeholder="이름1-이름2/이름3-이름4" />
+
       <button onclick="nextStep(2)">다음</button>
     </div>
 
-    <div id="step3" style="display: none">
+    <div class="step" id="step3" style="display: none">
       <p>3. 기존 history가 있으신가요?</p>
       <button onclick="handleHistoryUpload()">업로드</button>
       <button onclick="skipHistory()">없음</button>
       <input type="file" id="historyFile" style="display: none" accept=".xlsx" />
     </div>
 
-    <div id="step4" style="display: none">
+    <div class="step" id="step4" style="display: none">
       <label for="numGroups">4. 몇 개의 조를 만들까요?</label><br />
       <input type="number" id="numGroups" min="1" />
       <button onclick="runGrouping()">조 편성 시작</button>
@@ -39,14 +42,15 @@
 
     <div id="result" style="display: none">
       <h2>📋 조편성 결과</h2>
-      <div id="moduleDisplay"></div> <!-- 모듈명 표시 -->
+      <div id="moduleDisplay"></div>
+      <div id="scoreOutput"></div>
       <div id="groupOutput"></div>
+      <button onclick="location.reload()">홈으로</button>
       <button onclick="downloadHistory()">히스토리 다운로드</button>
     </div>
   </div>
 
+  <img src="assist-logo.png" class="logo-fixed" alt="aSSIST 로고" />
   <script src="script.js"></script>
-  <img src="assist-logo.png" class="logo-fixed" alt="aSSIST 로고">
-
 </body>
 </html>
