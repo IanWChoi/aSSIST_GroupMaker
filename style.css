@@ -10,7 +10,7 @@ body {
   margin: 0;
 }
 
-/* 각 단계 구역 스타일 */
+
 .step {
   width: 100%;
   max-width: 500px;
@@ -19,8 +19,14 @@ body {
   padding: 30px;
   margin-bottom: 20px;
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
-  text-align: center;
+  text-align: left;
 }
+
+.step button {
+  display: inline-block;
+  margin-top: 10px;
+}
+
 
 h1 {
   font-size: 1.8em;
@@ -54,7 +60,7 @@ button:hover {
   background-color: #1c57b5;
 }
 
-/* 그룹 출력 결과 */
+
 #groupOutput > div {
   background-color: #eef3fc;
   margin: 10px 0;
@@ -62,7 +68,7 @@ button:hover {
   border-radius: 8px;
 }
 
-/* 고정된 로고 하단 */
+
 .logo-fixed {
   position: fixed;
   bottom: 40px;
@@ -74,7 +80,7 @@ button:hover {
   z-index: 1000;
 }
 
-/* 결과 화면 */
+
 #result {
   text-align: center;
   padding: 20px;
