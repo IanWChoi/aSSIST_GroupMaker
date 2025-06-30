@@ -177,11 +177,11 @@ function downloadHistory() {
   XLSX.writeFile(uploadedHistoryWorkbook, `history_${moduleName}.xlsx`);
 }
 
-function drawNetworkOnDemand() {
+window.drawNetworkOnDemand = function () {
   const container = document.getElementById("network");
-  container.innerHTML = ""; // 중복 방지
+  container.innerHTML = ""; 
   drawNetwork(studentNames, Object.values(historyData).flat());
-}
+};
 
 function drawNetwork(students, history) {
   const angleStep = (2 * Math.PI) / students.length;
