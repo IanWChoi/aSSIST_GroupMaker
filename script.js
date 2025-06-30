@@ -75,12 +75,12 @@ function runGrouping() {
   document.getElementById("step4").style.display = "none";
   document.getElementById("result").style.display = "block";
 
-  const homeButton = document.createElement("button");
+/*  const homeButton = document.createElement("button");
   homeButton.innerText = "홈으로";
   homeButton.onclick = () => {
     location.reload();
   };
-  document.getElementById("groupOutput").appendChild(homeButton);
+  document.getElementById("groupOutput").appendChild(homeButton);*/
 }
 
 function generateGroups(students, numGroups, history) {
