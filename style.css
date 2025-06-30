@@ -109,6 +109,15 @@ button:hover {
   font-size: 1.1em;
 }
 
+
+#scoreOutput {
+  margin-top: 15px;
+  font-size: 0.95em;
+  color: #555;
+  text-align: center;
+}
+
+
 @media (max-width: 600px) {
   body {
     padding: 20px 10px 100px;

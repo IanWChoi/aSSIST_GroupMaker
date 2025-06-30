@@ -148,10 +148,10 @@ function displayGroups(groups) {
   moduleTitle.innerText = moduleName;
   container.appendChild(moduleTitle);
 
-  const scoreBox = document.createElement("div");
+  /*const scoreBox = document.createElement("div");
   scoreBox.id = "scoreBox";
   scoreBox.innerText = `중복 점수: ${lastScore}`;
-  document.getElementById("result").insertBefore(scoreBox, container);
+  document.getElementById("result").insertBefore(scoreBox, container);*/
 
   groups.forEach((group, i) => {
     const div = document.createElement("div");
@@ -180,6 +180,12 @@ function downloadHistory() {
 window.drawNetworkOnDemand = function () {
   const container = document.getElementById("network");
   container.innerHTML = ""; 
+
+  // 중복 점수 표시
+  const scoreOut = document.getElementById("scoreOutput");
+  scoreOut.innerText = `중복 점수: ${lastScore}`;
+  scoreOut.style.display = "block";
+
   drawNetwork(studentNames, Object.values(historyData).flat());
 };
 
