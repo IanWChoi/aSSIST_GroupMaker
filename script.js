@@ -176,3 +176,73 @@ function downloadHistory() {
 
   XLSX.writeFile(uploadedHistoryWorkbook, `history_${moduleName}.xlsx`);
 }
+
+function drawNetworkOnDemand() {
+  const container = document.getElementById("network");
+  container.innerHTML = ""; // 중복 방지
+  drawNetwork(studentNames, Object.values(historyData).flat());
+}
+
+function drawNetwork(students, history) {
+  const angleStep = (2 * Math.PI) / students.length;
+  const radius = 50 + students.length * 10;
+
+  const nodes = students.map((name, i) => ({
+    id: name,
+    label: name,
+    x: radius * Math.cos(i * angleStep),
+    y: radius * Math.sin(i * angleStep),
+    fixed: true,
+    font: {
+      size: 16,
+      vadjust: -5,
+      color: "#2c3e50",
+      face: "Segoe UI"
+    },
+    color: {
+      background: "#ffffff",
+      border: "#2d72d9"
+    },
+    shape: "dot",
+    size: 10
+  }));
+
+  const edgeCount = {};
+  history.forEach(group => {
+    for (let i = 0; i < group.length; i++) {
+      for (let j = i + 1; j < group.length; j++) {
+        const key = [group[i], group[j]].sort().join("::");
+        edgeCount[key] = (edgeCount[key] || 0) + 1;
+      }
+    }
+  });
+
+  const edges = Object.entries(edgeCount).map(([key, count]) => {
+    const [a, b] = key.split("::");
+    return {
+      from: a,
+      to: b,
+      width: Math.min(1 + count, 5),
+      color: {
+        color: "#2d72d9",
+        opacity: 0.4 + Math.min(count / 10, 0.5)
+      }
+    };
+  });
+
+  const container = document.getElementById("network");
+  const data = { nodes, edges };
+  const options = {
+    layout: {
+      improvedLayout: false
+    },
+    physics: false,
+    edges: {
+      smooth: {
+        type: "continuous"
+      }
+    }
+  };
+
+  new vis.Network(container, data, options);
+}
