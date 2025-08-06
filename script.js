@@ -252,3 +252,23 @@ function drawNetwork(students, history) {
 
   new vis.Network(container, data, options);
 }
+
+function captureResult() {
+  const captureArea = document.getElementById('captureArea');
+  const fileName = `${moduleName}_그룹.png`;
+  
+  html2canvas(captureArea, {
+    backgroundColor: '#f7fafc',
+    scale: 2,
+    useCORS: true,
+    allowTaint: false
+  }).then(canvas => {
+    const link = document.createElement('a');
+    link.download = fileName;
+    link.href = canvas.toDataURL('image/png');
+    link.click();
+  }).catch(error => {
+    console.error('캡처 중 오류 발생:', error);
+    alert('이미지 캡처에 실패했습니다.');
+  });
+}
