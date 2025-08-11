@@ -52,7 +52,8 @@ h1 {
 }
 
 input[type="text"],
-input[type="number"] {
+input[type="number"],
+textarea {
   width: 100%;
   padding: 14px 16px;
   margin: 12px 0;
@@ -65,7 +66,8 @@ input[type="number"] {
 }
 
 input[type="text"]:focus,
-input[type="number"]:focus {
+input[type="number"]:focus,
+textarea:focus {
   outline: none;
   border-color: #667eea;
   background-color: white;
@@ -205,4 +207,10 @@ button:active {
   .step {
     padding: 20px;
   }
+}
+
+textarea {
+  min-height: 80px;
+  resize: vertical;
+  font-family: inherit;
 }
