@@ -6,16 +6,25 @@ let lastScore = 0;
 let exclusionPairs = [];
 
 function nextStep(current, next = current + 1) {
-  document.getElementById(`step${current}`).style.display = "none";
-  document.getElementById(`step${next}`).style.display = "block";
-
   if (current === 1) {
     moduleName = document.getElementById("module").value.trim();
   }
 
   if (current === 2) {
     const raw = document.getElementById("names").value.trim();
-    studentNames = raw.split("/").map((name) => name.trim()).filter(Boolean);
+    const names = raw.split("/").map((name) => name.trim()).filter(Boolean);
+
+    const uniqueNames = new Set(names);
+    if (uniqueNames.size < names.length) {
+      const counts = {};
+      names.forEach(name => { counts[name] = (counts[name] || 0) + 1; });
+      const duplicates = Object.keys(counts).filter(name => counts[name] > 1);
+      alert(`중복된 학생 이름이 있습니다: ${duplicates.join(', ')}
+확인 후 다시 시도해주세요.`);
+      return;
+    }
+    
+    studentNames = names;
 
     const excludeRaw = document.getElementById("exclude").value.trim();
     exclusionPairs = excludeRaw
@@ -23,6 +32,9 @@ function nextStep(current, next = current + 1) {
       .map(pair => pair.split("-").map(name => name.trim()).sort().join("::"))
       .filter(Boolean);
   }
+
+  document.getElementById(`step${current}`).style.display = "none";
+  document.getElementById(`step${next}`).style.display = "block";
 }
 
 function handleHistoryUpload() {
