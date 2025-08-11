@@ -65,25 +65,31 @@ function runGrouping() {
 
   const allHistory = Object.values(historyData).flat();
   const result = generateGroups(studentNames, numGroups, allHistory);
+  
+  if (!result.groups) {
+    alert("제외 조합 조건에 맞는 조 편성을 찾을 수 없습니다. 제외 조합을 줄이거나 학생 수를 조정해주세요.");
+    return;
+  }
+
   const groups = result.groups;
   lastScore = result.score;
 
-  if (!historyData[moduleName]) historyData[moduleName] = [];
-  historyData[moduleName].push(...groups);
+  if (!historyData[moduleName]) {
+    historyData[moduleName] = [];
+  }
+  // 이전 라운드의 결과를 덮어쓰지 않고, 새 결과로 대체합니다.
+  historyData[moduleName] = groups;
 
   displayGroups(groups);
   document.getElementById("step4").style.display = "none";
   document.getElementById("result").style.display = "block";
-
-/*  const homeButton = document.createElement("button");
-  homeButton.innerText = "홈으로";
-  homeButton.onclick = () => {
-    location.reload();
-  };
-  document.getElementById("groupOutput").appendChild(homeButton);*/
+  
+  const scoreOut = document.getElementById("scoreOutput");
+  scoreOut.innerText = `중복 점수: ${lastScore}`;
+  scoreOut.style.display = "block";
 }
 
-function generateGroups(students, numGroups, history) {
+function calculateScore(groups, history) {
   const pairCounts = {};
   history.forEach((group) => {
     for (let i = 0; i < group.length; i++) {
@@ -94,6 +100,19 @@ function generateGroups(students, numGroups, history) {
     }
   });
 
+  let score = 0;
+  for (const group of groups) {
+    for (let i = 0; i < group.length; i++) {
+      for (let j = i + 1; j < group.length; j++) {
+        const key = [group[i], group[j]].sort().join("::");
+        score += pairCounts[key] || 0;
+      }
+    }
+  }
+  return score;
+}
+
+function generateGroups(students, numGroups, history) {
   let best = null;
   let lowestScore = Infinity;
 
@@ -120,15 +139,7 @@ function generateGroups(students, numGroups, history) {
     }
     if (invalid) continue;
 
-    let score = 0;
-    for (const group of groups) {
-      for (let i = 0; i < group.length; i++) {
-        for (let j = i + 1; j < group.length; j++) {
-          const key = [group[i], group[j]].sort().join("::");
-          score += pairCounts[key] || 0;
-        }
-      }
-    }
+    const score = calculateScore(groups, history);
 
     if (score < lowestScore) {
       lowestScore = score;
@@ -148,40 +159,84 @@ function displayGroups(groups) {
   moduleTitle.innerText = moduleName;
   container.appendChild(moduleTitle);
 
-  /*const scoreBox = document.createElement("div");
-  scoreBox.id = "scoreBox";
-  scoreBox.innerText = `중복 점수: ${lastScore}`;
-  document.getElementById("result").insertBefore(scoreBox, container);*/
-
   groups.forEach((group, i) => {
     const div = document.createElement("div");
-    div.innerHTML = `<strong>Group ${i + 1}</strong>: ${group.join(", ")}`;
+    div.innerHTML = `<strong>Group ${i + 1}</strong>`;
+    
+    const ul = document.createElement("ul");
+    ul.className = "group-list";
+    ul.dataset.groupIndex = i;
+
+    group.forEach(student => {
+      const li = document.createElement("li");
+      li.className = "student-item";
+      li.innerText = student;
+      li.dataset.studentName = student;
+      ul.appendChild(li);
+    });
+
+    div.appendChild(ul);
     container.appendChild(div);
+
+    new Sortable(ul, {
+      group: 'shared',
+      animation: 150,
+      onEnd: (evt) => {
+        const studentName = evt.item.dataset.studentName;
+        const fromGroupIndex = parseInt(evt.from.dataset.groupIndex);
+        const toGroupIndex = parseInt(evt.to.dataset.groupIndex);
+        const oldIndex = evt.oldDraggableIndex;
+        const newIndex = evt.newDraggableIndex;
+
+        // Update internal data structure
+        const currentGroups = historyData[moduleName];
+        
+        // Remove from old group
+        currentGroups[fromGroupIndex].splice(oldIndex, 1);
+        
+        // Add to new group
+        currentGroups[toGroupIndex].splice(newIndex, 0, studentName);
+
+        // Recalculate and update score
+        const allHistory = Object.values(historyData).filter(h => h !== currentGroups).flat();
+        lastScore = calculateScore(currentGroups, allHistory);
+        
+        const scoreOut = document.getElementById("scoreOutput");
+        scoreOut.innerText = `중복 점수: ${lastScore}`;
+      }
+    });
   });
 }
 
 function downloadHistory() {
-  if (!uploadedHistoryWorkbook) uploadedHistoryWorkbook = XLSX.utils.book_new();
+  const wb = XLSX.utils.book_new();
 
-  const idx = uploadedHistoryWorkbook.SheetNames.indexOf(moduleName);
-  if (idx !== -1) uploadedHistoryWorkbook.SheetNames.splice(idx, 1);
-
-  const data = [];
-  const history = historyData[moduleName];
-  history.forEach((group, idx) => {
-    data.push([idx + 1, ...group]);
+  // Add current module's modified data
+  const currentModuleData = [];
+  const currentGroups = historyData[moduleName];
+  currentGroups.forEach((group, idx) => {
+    currentModuleData.push([idx + 1, ...group]);
   });
-  const ws = XLSX.utils.aoa_to_sheet([["조번호", "학생1", "학생2", "..."]].concat(data));
-  XLSX.utils.book_append_sheet(uploadedHistoryWorkbook, ws, moduleName);
+  const ws = XLSX.utils.aoa_to_sheet([["조번호", "학생1", "학생2", "..."]].concat(currentModuleData));
+  XLSX.utils.book_append_sheet(wb, ws, moduleName);
 
-  XLSX.writeFile(uploadedHistoryWorkbook, `history_${moduleName}.xlsx`);
+  // Add other sheets from original workbook if they exist
+  if (uploadedHistoryWorkbook) {
+    uploadedHistoryWorkbook.SheetNames.forEach(sheetName => {
+      if (sheetName !== moduleName) {
+        const originalWs = uploadedHistoryWorkbook.Sheets[sheetName];
+        XLSX.utils.book_append_sheet(wb, originalWs, sheetName);
+      }
+    });
+  }
+  
+  XLSX.writeFile(wb, `history_${moduleName}_updated.xlsx`);
 }
 
 window.drawNetworkOnDemand = function () {
   const container = document.getElementById("network");
   container.innerHTML = ""; 
 
-  // 중복 점수 표시
   const scoreOut = document.getElementById("scoreOutput");
   scoreOut.innerText = `중복 점수: ${lastScore}`;
   scoreOut.style.display = "block";
