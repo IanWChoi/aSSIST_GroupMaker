@@ -201,10 +201,33 @@ button:active {
 
 @media (max-width: 600px) {
   body {
-    padding: 20px 10px 100px;
+    padding: 20px 15px 100px;
   }
   .step {
-    padding: 20px;
+    padding: 25px 20px;
+    margin-bottom: 20px;
+  }
+  
+  input[type="text"],
+  input[type="number"] {
+    padding: 12px 14px;
+    font-size: 16px; /* iOS 줌 방지 */
+  }
+  
+  button {
+    padding: 14px 20px;
+    font-size: 16px;
+    margin: 10px 5px 0 0;
+  }
+  
+  h1 {
+    font-size: 2em;
+    margin-bottom: 25px;
+  }
+  
+  #result {
+    padding: 20px 15px;
+    margin: 0 5px;
   }
 }
 
