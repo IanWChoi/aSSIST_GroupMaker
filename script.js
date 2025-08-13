@@ -14,6 +14,12 @@ function nextStep(current, next = current + 1) {
     const raw = document.getElementById("names").value.trim();
     const names = raw.split("/").map((name) => name.trim()).filter(Boolean);
 
+    // 학생 수 제한 (200명)
+    if (names.length > 200) {
+      alert('학생 수는 200명을 초과할 수 없습니다.');
+      return;
+    }
+
     const uniqueNames = new Set(names);
     if (uniqueNames.size < names.length) {
       const counts = {};
@@ -41,6 +47,14 @@ function handleHistoryUpload() {
   document.getElementById("historyFile").style.display = "block";
   document.getElementById("historyFile").addEventListener("change", (e) => {
     const file = e.target.files[0];
+    
+    // 파일 크기 제한 (5MB)
+    if (file.size > 5 * 1024 * 1024) {
+      alert('파일 크기는 5MB를 초과할 수 없습니다.');
+      e.target.value = '';
+      return;
+    }
+    
     const reader = new FileReader();
     reader.onload = (evt) => {
       const data = new Uint8Array(evt.target.result);
@@ -97,7 +111,7 @@ function runGrouping() {
   document.getElementById("result").style.display = "block";
   
   const scoreOut = document.getElementById("scoreOutput");
-  scoreOut.innerText = `중복 점수: ${lastScore}`;
+  scoreOut.textContent = `중복 점수: ${lastScore}`;
   scoreOut.style.display = "block";
 }
 
@@ -164,16 +178,17 @@ function generateGroups(students, numGroups, history) {
 
 function displayGroups(groups) {
   const container = document.getElementById("groupOutput");
-  container.innerHTML = "";
+  container.replaceChildren();
 
-  const moduleTitle = document.createElement("div");
-  moduleTitle.id = "moduleDisplay";
-  moduleTitle.innerText = moduleName;
-  container.appendChild(moduleTitle);
+  // HTML에 이미 있는 moduleDisplay 사용
+  const moduleTitle = document.getElementById("moduleDisplay");
+  moduleTitle.textContent = moduleName;
 
   groups.forEach((group, i) => {
     const div = document.createElement("div");
-    div.innerHTML = `<strong>Group ${i + 1}</strong>`;
+    const strong = document.createElement("strong");
+    strong.textContent = `Group ${i + 1}`;
+    div.appendChild(strong);
     
     const ul = document.createElement("ul");
     ul.className = "group-list";
@@ -182,7 +197,7 @@ function displayGroups(groups) {
     group.forEach(student => {
       const li = document.createElement("li");
       li.className = "student-item";
-      li.innerText = student;
+      li.textContent = student;
       li.dataset.studentName = student;
       ul.appendChild(li);
     });
@@ -214,10 +229,26 @@ function displayGroups(groups) {
         lastScore = calculateScore(currentGroups, allHistory);
         
         const scoreOut = document.getElementById("scoreOutput");
-        scoreOut.innerText = `중복 점수: ${lastScore}`;
+        scoreOut.textContent = `중복 점수: ${lastScore}`;
       }
     });
   });
+}
+
+function sanitizeForExcel(value) {
+  // 엑셀 수식 인젝션 방지: =, +, -, @ 로 시작하는 값에 아포스트로피 추가
+  if (typeof value === 'string' && /^[=+\-@]/.test(value)) {
+    return "'" + value;
+  }
+  return value;
+}
+
+function sanitizeModuleName(name) {
+  // 파일명에 사용할 수 없는 문자 제거 및 길이 제한
+  return name
+    .replace(/[<>:"/\\|?*\x00-\x1f]/g, '') // 제어 문자 및 특수 문자 제거
+    .trim()
+    .substring(0, 50); // 최대 50자로 제한
 }
 
 function downloadHistory() {
@@ -227,10 +258,11 @@ function downloadHistory() {
   const currentModuleData = [];
   const currentGroups = historyData[moduleName];
   currentGroups.forEach((group, idx) => {
-    currentModuleData.push([idx + 1, ...group]);
+    const sanitizedGroup = group.map(student => sanitizeForExcel(student));
+    currentModuleData.push([idx + 1, ...sanitizedGroup]);
   });
   const ws = XLSX.utils.aoa_to_sheet([["조번호", "학생1", "학생2", "..."]].concat(currentModuleData));
-  XLSX.utils.book_append_sheet(wb, ws, moduleName);
+  XLSX.utils.book_append_sheet(wb, ws, sanitizeModuleName(moduleName));
 
   // Add other sheets from original workbook if they exist
   if (uploadedHistoryWorkbook) {
@@ -242,15 +274,15 @@ function downloadHistory() {
     });
   }
   
-  XLSX.writeFile(wb, `history_${moduleName}_updated.xlsx`);
+  XLSX.writeFile(wb, `history_${sanitizeModuleName(moduleName)}_updated.xlsx`);
 }
 
 window.drawNetworkOnDemand = function () {
   const container = document.getElementById("network");
-  container.innerHTML = ""; 
+  container.replaceChildren(); 
 
   const scoreOut = document.getElementById("scoreOutput");
-  scoreOut.innerText = `중복 점수: ${lastScore}`;
+  scoreOut.textContent = `중복 점수: ${lastScore}`;
   scoreOut.style.display = "block";
 
   drawNetwork(studentNames, Object.values(historyData).flat());
@@ -339,3 +371,51 @@ function captureResult() {
     alert('이미지 캡처에 실패했습니다.');
   });
 }
+
+// DOM이 로드된 후 이벤트 리스너 등록
+document.addEventListener('DOMContentLoaded', function() {
+  // 제목 클릭시 페이지 새로고침
+  document.getElementById('title').addEventListener('click', function() {
+    location.reload();
+  });
+  
+  // 단계별 다음 버튼
+  document.getElementById('step1-next').addEventListener('click', function() {
+    nextStep(1);
+  });
+  
+  document.getElementById('step2-next').addEventListener('click', function() {
+    nextStep(2);
+  });
+  
+  // 히스토리 관련 버튼
+  document.getElementById('upload-history').addEventListener('click', function() {
+    handleHistoryUpload();
+  });
+  
+  document.getElementById('skip-history').addEventListener('click', function() {
+    skipHistory();
+  });
+  
+  // 조편성 시작 버튼
+  document.getElementById('start-grouping').addEventListener('click', function() {
+    runGrouping();
+  });
+  
+  // 결과 화면 버튼들
+  document.getElementById('home-btn').addEventListener('click', function() {
+    location.reload();
+  });
+  
+  document.getElementById('download-btn').addEventListener('click', function() {
+    downloadHistory();
+  });
+  
+  document.getElementById('capture-btn').addEventListener('click', function() {
+    captureResult();
+  });
+  
+  document.getElementById('visualize-btn').addEventListener('click', function() {
+    drawNetworkOnDemand();
+  });
+});
