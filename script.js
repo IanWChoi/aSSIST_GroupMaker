@@ -8,6 +8,8 @@ let exclusionPairs = [];
 function nextStep(current, next = current + 1) {
   if (current === 1) {
     moduleName = document.getElementById("module").value.trim();
+    // 첫 번째 단계를 벗어나면 공지 숨기기
+    document.querySelector(".notice-text").style.display = "none";
   }
 
   if (current === 2) {
@@ -377,6 +379,11 @@ document.addEventListener('DOMContentLoaded', function() {
   // 제목 클릭시 페이지 새로고침
   document.getElementById('title').addEventListener('click', function() {
     location.reload();
+  });
+  
+  // 홈으로 버튼 클릭시 공지 다시 표시
+  document.getElementById('home-btn').addEventListener('click', function() {
+    document.querySelector(".notice-text").style.display = "block";
   });
   
   // 단계별 다음 버튼
