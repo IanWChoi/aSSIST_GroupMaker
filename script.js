@@ -939,6 +939,10 @@ document.addEventListener('DOMContentLoaded', function() {
     location.reload();
   });
   
+  document.getElementById('reload-btn').addEventListener('click', function() {
+    runGrouping();
+  });
+  
   document.getElementById('download-btn').addEventListener('click', function() {
     downloadHistory();
   });
