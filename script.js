@@ -11,6 +11,7 @@ let balanceOptions = {
   job: true
 };
 let priorityOrder = ['history', 'gender', 'job']; // 기본 우선순위
+let showGenderColors = false; // 성별 색상 표시 여부 (기본값: 중립)
 
 function nextStep(current, next = current + 1) {
   if (current === 1) {
@@ -211,6 +212,16 @@ function runGrouping() {
   displayGroups(groups);
   document.getElementById("step4").style.display = "none";
   document.getElementById("result").style.display = "block";
+  
+  // 고급 모드일 때 색상 토글 버튼 표시
+  const colorToggle = document.getElementById("toggle-color-btn");
+  if (currentMode === 'advanced' && studentData.length > 0) {
+    colorToggle.style.display = "inline-block";
+    showGenderColors = false; // 초기값은 색상 표시 안함
+    colorToggle.textContent = "🎨 성별 색상 켜기";
+  } else {
+    colorToggle.style.display = "none";
+  }
   
   const scoreOut = document.getElementById("scoreOutput");
   if (currentMode === 'advanced') {
@@ -472,7 +483,7 @@ function displayGroups(groups) {
       li.className = "student-item";
       
       // 고급 모드일 때 성별에 따른 색상 클래스 추가
-      if (currentMode === 'advanced' && studentData.length > 0) {
+      if (currentMode === 'advanced' && studentData.length > 0 && showGenderColors) {
         const studentInfo = studentData.find(s => s.name === student);
         if (studentInfo && studentInfo.gender) {
           if (studentInfo.gender === '남') {
@@ -969,5 +980,32 @@ document.addEventListener('DOMContentLoaded', function() {
   
   document.getElementById('visualize-btn').addEventListener('click', function() {
     drawNetworkOnDemand();
+  });
+  
+  // 색상 토글 버튼
+  document.getElementById('toggle-color-btn').addEventListener('click', function() {
+    showGenderColors = !showGenderColors;
+    this.textContent = showGenderColors ? "🎨 성별 색상 끄기" : "🎨 성별 색상 켜기";
+    
+    // 모든 학생 아이템의 색상 클래스 토글
+    const studentItems = document.querySelectorAll('.student-item');
+    studentItems.forEach(item => {
+      if (showGenderColors && currentMode === 'advanced' && studentData.length > 0) {
+        const studentName = item.dataset.studentName;
+        const studentInfo = studentData.find(s => s.name === studentName);
+        if (studentInfo && studentInfo.gender) {
+          item.classList.remove('gender-male', 'gender-female', 'gender-unknown');
+          if (studentInfo.gender === '남') {
+            item.classList.add('gender-male');
+          } else if (studentInfo.gender === '여') {
+            item.classList.add('gender-female');
+          }
+        } else {
+          item.classList.add('gender-unknown');
+        }
+      } else {
+        item.classList.remove('gender-male', 'gender-female', 'gender-unknown');
+      }
+    });
   });
 });
