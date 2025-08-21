@@ -27,12 +27,79 @@
       <button id="step1-next">다음</button>
     </div>
 
-    <div class="step" id="step2" style="display: none">
-      <label for="names">2. 학생 이름을 입력하세요 (예: 박선영/임유나/최우석)</label><br />
-      <input type="text" id="names" placeholder="이름1/이름2/..." />
+    <div class="step step2-container" id="step2" style="display: none">
+      <h2>2. 학생 정보를 입력하세요</h2>
+      
+      <!-- 모드 토글 버튼 -->
+      <div class="mode-toggle">
+        <button class="toggle-btn active" id="basic-mode-btn">기본 모드</button>
+        <button class="toggle-btn" id="advanced-mode-btn">고급 모드 <span class="beta-tag">(beta)</span></button>
+      </div>
 
-      <label for="exclude" style="margin-top: 10px; display: block;">(선택) 같은 조가 되지 않아야 하는 학생 쌍을 입력하세요<br />(예: 임유나-최우석/박선영-노홍연)</label>
-      <input type="text" id="exclude" placeholder="이름1-이름2/이름3-이름4" />
+      <div class="advanced-warning" id="advanced-warning" style="display: none;">
+        ⚠️ <strong>주의사항:</strong> 학생 수가 30명 이상일 때에 고급모드를 추천합니다.<br>
+        성비나 직군까지 고려한다면 중복조합의 가능성이 높아집니다.
+      </div>
+
+      <div class="mode-container">
+        <!-- 기본 모드 -->
+        <div id="basic-mode" class="mode-content">
+          <label for="names">학생 이름을 입력하세요 (예: 박선영/임유나/최우석)</label><br />
+          <input type="text" id="names" placeholder="이름1/이름2/..." />
+
+          <label for="exclude" style="margin-top: 10px; display: block;">(선택) 같은 조가 되지 않아야 하는 학생 쌍을 입력하세요<br />(예: 임유나-최우석/박선영-노홍연)</label>
+          <input type="text" id="exclude" placeholder="이름1-이름2/이름3-이름4" />
+        </div>
+
+        <!-- 고급 모드 -->
+        <div id="advanced-mode" class="mode-content" style="display: none;">
+          <div class="excel-upload-section">
+            <label>학생 정보 엑셀 업로드</label>
+            <div class="excel-buttons">
+              <button id="download-sample" type="button">📥 샘플 다운로드</button>
+              <button id="upload-student-excel" type="button">📤 엑셀 업로드</button>
+              <input type="file" id="studentExcelFile" style="display: none" accept=".xlsx,.xls" />
+            </div>
+            <div id="upload-status" class="upload-status"></div>
+          </div>
+
+          <textarea id="student-data" style="display: none;"></textarea>
+          
+          <div class="advanced-options">
+            <label>
+              <input type="checkbox" id="balance-gender" checked> 성비 균형 맞추기
+            </label>
+            <label>
+              <input type="checkbox" id="balance-job" checked> 직군 분산하기
+            </label>
+          </div>
+
+          <div id="priority-section" class="priority-section">
+            <label class="priority-label">알고리즘 우선순위 (위에서 아래 순서로 중요도 결정)</label>
+            <div class="priority-hint">💡 드래그해서 순서를 바꿔보세요</div>
+            <ul id="priority-list" class="priority-list">
+              <li class="priority-item" data-type="history">
+                <span class="drag-handle">⋮⋮</span>
+                <span class="priority-text">중복 조합 최소화</span>
+                <span class="priority-desc">이전 조편성 기록 기반</span>
+              </li>
+              <li class="priority-item" data-type="gender">
+                <span class="drag-handle">⋮⋮</span>
+                <span class="priority-text">성비 균형</span>
+                <span class="priority-desc">남녀 비율 균등 분배</span>
+              </li>
+              <li class="priority-item" data-type="job">
+                <span class="drag-handle">⋮⋮</span>
+                <span class="priority-text">직군 분산</span>
+                <span class="priority-desc">다양한 직군 섞어서 배치</span>
+              </li>
+            </ul>
+          </div>
+
+          <label for="exclude-advanced" style="margin-top: 10px; display: block;">(선택) 같은 조가 되지 않아야 하는 학생 쌍<br />(예: 임유나-최우석/박선영-노홍연)</label>
+          <input type="text" id="exclude-advanced" placeholder="이름1-이름2/이름3-이름4" />
+        </div>
+      </div>
 
       <button id="step2-next">다음</button>
     </div>

@@ -293,3 +293,347 @@ button:active {
 #names {
   height: 80px;
 }
+
+/* Step2 컨테이너 스타일 */
+.step2-container {
+  max-width: 700px !important;
+}
+
+.step2-container h2 {
+  font-size: 1.3em;
+  margin-bottom: 20px;
+  color: #2d3748;
+  text-align: center;
+}
+
+/* 모드 토글 버튼 */
+.mode-toggle {
+  display: flex;
+  justify-content: center;
+  gap: 0;
+  margin-bottom: 25px;
+  background: #e2e8f0;
+  border-radius: 12px;
+  padding: 4px;
+}
+
+.toggle-btn {
+  flex: 1;
+  padding: 10px 20px;
+  margin: 0;
+  background: transparent;
+  color: #4a5568;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  font-size: 0.95em;
+  font-weight: 600;
+  transition: all 0.3s ease;
+  box-shadow: none;
+}
+
+.toggle-btn.active {
+  background: white;
+  color: #667eea;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+}
+
+.toggle-btn:hover:not(.active) {
+  background: rgba(255, 255, 255, 0.5);
+  transform: none;
+}
+
+.beta-tag {
+  font-size: 0.8em;
+  color: #e53e3e;
+  font-weight: 500;
+}
+
+/* 모드 컨테이너 */
+.mode-container {
+  margin-bottom: 20px;
+}
+
+.mode-content {
+  animation: fadeIn 0.3s ease;
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(-10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* 고급 모드 스타일 */
+#student-data {
+  width: 100%;
+  min-height: 150px;
+  padding: 14px 16px;
+  margin: 12px 0;
+  font-size: 0.95em;
+  font-family: 'Courier New', monospace;
+  border: 2px solid #e2e8f0;
+  border-radius: 12px;
+  background-color: #f8fafc;
+  transition: all 0.2s ease;
+  resize: vertical;
+}
+
+#student-data:focus {
+  outline: none;
+  border-color: #667eea;
+  background-color: white;
+  box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+}
+
+.advanced-options {
+  display: flex;
+  gap: 20px;
+  margin: 15px 0;
+  padding: 15px;
+  background: #f8fafc;
+  border-radius: 8px;
+}
+
+.advanced-options label {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 0.95em;
+  font-weight: 500;
+  cursor: pointer;
+  margin-bottom: 0;
+}
+
+.advanced-options input[type="checkbox"] {
+  width: 18px;
+  height: 18px;
+  cursor: pointer;
+}
+
+/* 반응형 디자인 */
+@media (max-width: 600px) {
+  .step2-container {
+    max-width: 100% !important;
+  }
+  
+  .advanced-options {
+    flex-direction: column;
+    gap: 10px;
+  }
+  
+  #student-data {
+    font-size: 14px;
+  }
+}
+
+/* 엑셀 업로드 섹션 스타일 */
+.excel-upload-section {
+  margin-bottom: 20px;
+  padding: 20px;
+  background: linear-gradient(135deg, #e6fffa 0%, #f0fff4 100%);
+  border-radius: 12px;
+  border: 2px solid #4fd1c7;
+}
+
+.excel-upload-section label {
+  color: #2d3748;
+  font-weight: 600;
+  font-size: 1.1em;
+  margin-bottom: 15px;
+  display: block;
+}
+
+.excel-buttons {
+  display: flex;
+  gap: 12px;
+  margin-bottom: 15px;
+}
+
+.excel-buttons button {
+  flex: 1;
+  padding: 12px 16px;
+  font-size: 0.95em;
+  font-weight: 600;
+  border-radius: 8px;
+  border: none;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  margin: 0;
+}
+
+#download-sample {
+  background: linear-gradient(135deg, #48bb78 0%, #38a169 100%);
+  color: white;
+  box-shadow: 0 4px 15px rgba(72, 187, 120, 0.3);
+}
+
+#download-sample:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 20px rgba(72, 187, 120, 0.4);
+}
+
+#upload-student-excel {
+  background: linear-gradient(135deg, #4299e1 0%, #3182ce 100%);
+  color: white;
+  box-shadow: 0 4px 15px rgba(66, 153, 225, 0.3);
+}
+
+#upload-student-excel:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 20px rgba(66, 153, 225, 0.4);
+}
+
+.upload-status {
+  font-size: 0.95em;
+  font-weight: 600;
+  padding: 8px 12px;
+  border-radius: 6px;
+  background: rgba(255, 255, 255, 0.8);
+  min-height: 20px;
+  display: flex;
+  align-items: center;
+}
+
+/* 우선순위 드래그 앤 드롭 섹션 */
+.priority-section {
+  margin-top: 25px;
+  padding: 20px;
+  background: linear-gradient(135deg, #f7fafc 0%, #edf2f7 100%);
+  border-radius: 12px;
+  border: 2px solid #cbd5e0;
+}
+
+.priority-label {
+  font-size: 1.1em;
+  font-weight: 600;
+  color: #2d3748;
+  margin-bottom: 8px;
+}
+
+.priority-hint {
+  font-size: 0.9em;
+  color: #718096;
+  margin-bottom: 15px;
+  font-style: italic;
+}
+
+.priority-list {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+.priority-item {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 15px 20px;
+  margin-bottom: 8px;
+  background: white;
+  border: 2px solid #e2e8f0;
+  border-radius: 10px;
+  cursor: grab;
+  transition: all 0.2s ease;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+}
+
+.priority-item:hover {
+  border-color: #667eea;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  transform: translateY(-1px);
+}
+
+.priority-item:active,
+.priority-item.dragging {
+  cursor: grabbing;
+  transform: scale(1.02);
+  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.15);
+  z-index: 1000;
+}
+
+.drag-handle {
+  font-size: 1.2em;
+  color: #a0aec0;
+  cursor: grab;
+  user-select: none;
+}
+
+.priority-item:active .drag-handle,
+.priority-item.dragging .drag-handle {
+  cursor: grabbing;
+}
+
+.priority-text {
+  font-weight: 600;
+  color: #2d3748;
+  flex: 1;
+  font-size: 1em;
+}
+
+.priority-desc {
+  font-size: 0.85em;
+  color: #718096;
+  font-style: italic;
+}
+
+/* 드래그 중 스타일 */
+.priority-item.drag-over {
+  border-color: #667eea;
+  background: #f0f8ff;
+}
+
+.priority-item.placeholder {
+  opacity: 0.5;
+  border-style: dashed;
+  background: #f8fafc;
+}
+
+/* 반응형 디자인 추가 */
+@media (max-width: 600px) {
+  .excel-buttons {
+    flex-direction: column;
+  }
+  
+  .excel-buttons button {
+    margin-bottom: 8px;
+  }
+  
+  .priority-item {
+    padding: 12px 15px;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 8px;
+  }
+  
+  .priority-text {
+    font-size: 0.95em;
+  }
+  
+  .priority-desc {
+    font-size: 0.8em;
+  }
+}
+
+/* 고급 모드 주의사항 */
+.advanced-warning {
+  margin-top: 20px;
+  margin-bottom: 25px;
+  padding: 15px 18px;
+  background: linear-gradient(135deg, #fed7d7 0%, #feb2b2 100%);
+  border: 2px solid #fc8181;
+  border-radius: 10px;
+  color: #742a2a;
+  font-size: 0.95em;
+  line-height: 1.5;
+  font-weight: 500;
+}
+
+.advanced-warning strong {
+  color: #c53030;
+}
