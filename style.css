@@ -144,6 +144,7 @@ button:active {
   margin: 5px;
   background-color: #e2e8f0;
   border-radius: 8px;
+  border: 1px solid transparent;
   cursor: grab;
   transition: background-color 0.2s;
 }
@@ -155,17 +156,17 @@ button:active {
 /* 고급 모드 - 성별별 배경색 (글자색은 유지) */
 .student-item.gender-male {
   background-color: #dbeafe;
-  border: 1px solid #93c5fd;
+  border-color: #93c5fd;
 }
 
 .student-item.gender-female {
   background-color: #fce7f3;
-  border: 1px solid #f9a8d4;
+  border-color: #f9a8d4;
 }
 
 .student-item.gender-unknown {
   background-color: #f1f5f9;
-  border: 1px solid #cbd5e0;
+  border-color: #cbd5e0;
 }
 
 .student-item.gender-male:hover {
