@@ -287,6 +287,7 @@ function generateAdvancedGroups(students, numGroups, history) {
   let best = null;
   let lowestScore = Infinity;
   let bestBalanceScore = Infinity;
+  let bestHistoryScore = 0;
 
   for (let t = 0; t < 1000; t++) {
     const shuffled = [...students].sort(() => Math.random() - 0.5);
@@ -369,14 +370,16 @@ function generateAdvancedGroups(students, numGroups, history) {
     if (totalScore < lowestScore) {
       lowestScore = totalScore;
       bestBalanceScore = genderScore + jobScore;
+      bestHistoryScore = score; // 실제 히스토리 중복 점수 저장
       best = groups;
     }
   }
 
   return { 
     groups: best, 
-    score: lowestScore,
-    balanceScore: bestBalanceScore.toFixed(2)
+    score: bestHistoryScore, // 실제 히스토리 중복 점수 반환
+    balanceScore: bestBalanceScore.toFixed(2),
+    totalScore: lowestScore // 전체 가중치 점수
   };
 }
 
