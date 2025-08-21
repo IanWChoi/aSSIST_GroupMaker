@@ -8,6 +8,13 @@ let exclusionPairs = [];
 function nextStep(current, next = current + 1) {
   if (current === 1) {
     moduleName = document.getElementById("module").value.trim();
+    
+    // 모듈명 31자 제한 체크 (Excel 시트명 제한)
+    if (moduleName.length > 31) {
+      alert('모듈 이름은 31자 이하로 입력해주세요.\n(Excel 시트명 제한)');
+      return;
+    }
+    
     // 첫 번째 단계를 벗어나면 공지 숨기기
     document.querySelector(".notice-text").style.display = "none";
   }
