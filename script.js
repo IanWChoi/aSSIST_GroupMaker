@@ -454,6 +454,21 @@ function displayGroups(groups) {
     group.forEach(student => {
       const li = document.createElement("li");
       li.className = "student-item";
+      
+      // 고급 모드일 때 성별에 따른 색상 클래스 추가
+      if (currentMode === 'advanced' && studentData.length > 0) {
+        const studentInfo = studentData.find(s => s.name === student);
+        if (studentInfo && studentInfo.gender) {
+          if (studentInfo.gender === '남') {
+            li.classList.add('gender-male');
+          } else if (studentInfo.gender === '여') {
+            li.classList.add('gender-female');
+          }
+        } else {
+          li.classList.add('gender-unknown');
+        }
+      }
+      
       li.textContent = student;
       li.dataset.studentName = student;
       ul.appendChild(li);
@@ -752,18 +767,22 @@ function handleStudentExcelUpload(file) {
 function initializePriorityDragDrop() {
   const priorityList = document.getElementById('priority-list');
   
-  new Sortable(priorityList, {
-    handle: '.drag-handle',
-    animation: 150,
-    ghostClass: 'priority-item-ghost',
-    onStart: function(evt) {
-      evt.item.classList.add('dragging');
-    },
-    onEnd: function(evt) {
-      evt.item.classList.remove('dragging');
-      updatePriorityOrder();
-    }
-  });
+  if (priorityList && typeof Sortable !== 'undefined') {
+    new Sortable(priorityList, {
+      handle: '.drag-handle',
+      animation: 150,
+      ghostClass: 'priority-item-ghost',
+      onStart: function(evt) {
+        evt.item.classList.add('dragging');
+      },
+      onEnd: function(evt) {
+        evt.item.classList.remove('dragging');
+        updatePriorityOrder();
+      }
+    });
+  } else {
+    console.warn('Sortable not available or priority-list not found');
+  }
 }
 
 // 우선순위 순서 업데이트
@@ -846,11 +865,17 @@ document.addEventListener('DOMContentLoaded', function() {
       document.getElementById('basic-mode-btn').classList.remove('active');
       document.getElementById('advanced-mode').style.display = 'block';
       document.getElementById('basic-mode').style.display = 'none';
-      document.getElementById('advanced-warning').style.display = 'block';
       
-      // 드래그 앤 드롭 초기화
-      initializePriorityDragDrop();
-      updatePrioritySectionVisibility();
+      const warningEl = document.getElementById('advanced-warning');
+      if (warningEl) {
+        warningEl.style.display = 'block';
+      }
+      
+      // 드래그 앤 드롭 초기화 (약간의 지연을 두고)
+      setTimeout(() => {
+        initializePriorityDragDrop();
+        updatePrioritySectionVisibility();
+      }, 100);
     }
   });
   
