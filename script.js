@@ -325,6 +325,14 @@ function generateAdvancedGroups(students, numGroups, history) {
         groups[i % numGroups].push(student.name);
       });
     }
+    
+    // 각 그룹 내에서 학생 순서를 랜덤하게 섞기
+    groups.forEach(group => {
+      for (let i = group.length - 1; i > 0; i--) {
+        const j = Math.floor(Math.random() * (i + 1));
+        [group[i], group[j]] = [group[j], group[i]];
+      }
+    });
 
     // 제외 조합 체크
     let invalid = false;
@@ -444,8 +452,13 @@ function displayGroups(groups) {
   const moduleTitle = document.getElementById("moduleDisplay");
   moduleTitle.textContent = moduleName;
 
+  // 그리드 컨테이너 생성
+  const gridContainer = document.createElement("div");
+  gridContainer.className = "groups-grid";
+  
   groups.forEach((group, i) => {
     const div = document.createElement("div");
+    div.className = "group-card";
     const strong = document.createElement("strong");
     strong.textContent = `Group ${i + 1}`;
     div.appendChild(strong);
@@ -478,7 +491,7 @@ function displayGroups(groups) {
     });
 
     div.appendChild(ul);
-    container.appendChild(div);
+    gridContainer.appendChild(div);
 
     new Sortable(ul, {
       group: 'shared',
@@ -508,6 +521,9 @@ function displayGroups(groups) {
       }
     });
   });
+  
+  // 그리드 컨테이너를 메인 컨테이너에 추가
+  container.appendChild(gridContainer);
 }
 
 function sanitizeForExcel(value) {
