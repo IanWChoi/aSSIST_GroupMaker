@@ -1,7 +1,5 @@
 # aSSIST_GroupMaker
 
-https://grouping.assist.ac.kr
-
 https://ianwchoi.github.io/aSSIST_GroupMaker/
 
 ## 기능
